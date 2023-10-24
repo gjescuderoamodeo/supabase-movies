@@ -96,6 +96,48 @@ function ImportMovies() {
 const showMovies = document.getElementById("show-movies");
 showMovies.addEventListener("click", async () => {
   // añadir código para mostrar las películas cargándolas de supabase
+  // 1º llamada supabase
+  // 2 cargar pelis moviecontainer
+  // 3 hacer uso funcion render movie
+
+  const { data: movies, error } = await supabase
+    .from("movies")
+    .select("*");
+
+  movies.forEach((movie) => (moviesContainer.innerHTML += renderMovie(movie)));
+
+  this.renderMovie();
+});
+
+const search2 = document.getElementById("search2");
+search2.addEventListener("click", async () => {
+  const durann = document.getElementById("order-selector").value;
+  const ascendente = document.getElementById("asc-selector").value;
+  let asc = false;
+  if (ascendente === "true") {
+    asc = true;
+  }
+  if (durann === "duracion") {
+    const { data: movies, error } = await supabase
+      .from("movies")
+      .select("*")
+      .order("runtime", { ascending: asc })
+      .limit(10);
+
+    movies.forEach((movie) => (moviesContainer.innerHTML += renderMovie(movie)));
+
+    this.renderMovie();
+  } else {
+    const { data: movies, error } = await supabase
+      .from("movies")
+      .select("*")
+      .order("year", { ascending: asc })
+      .limit(10);
+
+    movies.forEach((movie) => (moviesContainer.innerHTML += renderMovie(movie)));
+
+    this.renderMovie();
+  }
 });
 
 const searchMovie = document.getElementById("search-button");
